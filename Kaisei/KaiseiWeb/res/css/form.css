@@ -1,0 +1,38 @@
+input
+{
+	margin: 10px;
+	padding: 10px;
+	height: 40px;
+}
+input[type = "button"],
+input[type = "submit"]
+{
+	background-color: #ff0064;
+	color: #fff;
+	min-width: 100px;
+	border: none;
+}
+
+input[type = "email"],
+input[type = "password"],
+input[type = "text"]
+{
+	color: #000;
+	min-width: 50%;
+	background-color: #e9e9e9;
+	outline: none;
+	border: 1px solid #fff;
+	transition: 0.5s border;
+}
+
+input[type = "email"]:focus,
+input[type = "password"]:focus,
+input[type = "text"]:focus
+{
+	border: 1px solid rgb(128, 0, 50);
+}
+
+label.error
+{
+	color: #ff0064;
+}

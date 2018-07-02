@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,400');
+*
+{
+	font-family: 'Roboto', sans-serif;
+}
+
+body
+{
+	display: block;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(128, 0, 50);
+}
+
+#content
+{
+	display: grid;
+	box-shadow: 0px 0px 20px -5px rgb(0, 0, 0);
+	grid-template-rows: auto auto;
+	padding: 20px;
+	grid-template-areas: "Logo"
+						 "Body";
+	width: 600px;
+	height: 500px;
+	background: #fff;
+}
+
+#logo
+{
+	grid-area: Logo;
+	font-size: 64px;
+	text-align: center;
+	align-self: flex-end;
+	font-weight: 100;
+	margin-bottom: 20px;
+}
+
+#mainForm
+{
+	grid-area: Body;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	height: 100%;
+}

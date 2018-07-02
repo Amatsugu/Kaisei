@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href="res/css/style.css" rel="stylesheet">
+	<link href="res/css/form.css" rel="stylesheet">
+	<script src="res/js/jquery-3.3.1.min.js"></script>
+	<script async src="res/js/login.js"></script>
+	<title>Kaisei</title>
+</head>
+<body>
+	<div id="content">
+		<div id="logo">
+			Kaisei
+		</div>
+		<div id="body">
+			<form id="mainForm">
+				<label class="error" style="opacity: 0;">ERR</label>
+				<input type="email" name="UserEmail" placeholder="Email" autocomplete="email" maxlength="100" required>
+				<input type='password' name="password" autocomplete='current-password' placeholder='Password' maxlength="100" minlength="8">
+				<input type='password' name="newpassword" style='display:none' autocomplete='new-password' placeholder='Choose Password' maxlength="100" minlength="8">
+				<input type='password' name="password2" style='display:none' autocomplete='passowrd' placeholder='Confirm Password' maxlength="100" minlength="8">
+				<input type='text' name="username" style='display:none' autocomplete="username" placeholder='Enter Username' maxlength="100" minlength="3">
+				<input type="submit" value="Continue">
+			</form>
+		</div>
+	</div>
+</body>
+</html>
