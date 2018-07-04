@@ -17,6 +17,15 @@ body
 	background-color: rgb(128, 0, 50);
 }
 
+#background
+{
+	display: block;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: -1;
+}
+
 #content
 {
 	display: grid;
