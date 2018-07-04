@@ -28,13 +28,13 @@ $(document).ready(function(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	$("#background").append(renderer.domElement);
 
-	var sprite = new THREE.TextureLoader().load('res/js/sprites/Fire Spark.png');
+	/*var sprite = new THREE.TextureLoader().load('res/js/sprites/Fire Spark.png');
 	var material = new THREE.SpriteMaterial({
 		color : 0xff0064,
 		map: sprite,
 		alphaTest: 0.5,
 		transparent: true
-	});
+	});*/
 	// var m = new THREE.MeshBasicMaterial({ color : 0xff0064 });
 	// var s = new THREE.BoxGeometry(1, 1, 1);
 	/*for(var i = 0; i < 100; i++)
