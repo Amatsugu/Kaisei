@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JWT" Version="4.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
     <PackageReference Include="Nancy" Version="2.0.0-pre1911" />
     <PackageReference Include="Nancy.Authentication.Stateless" Version="2.0.0-pre1911" />
     <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0-pre1911" />

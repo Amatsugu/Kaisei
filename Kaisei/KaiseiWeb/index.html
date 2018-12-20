@@ -20,13 +20,28 @@
 			Kaisei
 		</div>
 		<div id="body">
-			<form id="mainForm">
+			<form id="mainForm" method="POST" action="@Model.Callback" data-verified="@Model.Verified" data-appId="@Model.AppId">
 				<label class="error" style="opacity: 0;">ERR</label>
 				<input type="email" name="UserEmail" placeholder="Email" autocomplete="email" maxlength="100" required>
 				<input type='password' name="password" autocomplete='current-password' placeholder='Password' maxlength="100" minlength="8">
+				<input type='text' name="username" style='display:none' autocomplete="username" placeholder='Enter Username' maxlength="100" minlength="3">
 				<input type='password' name="newpassword" style='display:none' autocomplete='new-password' placeholder='Choose Password' maxlength="100" minlength="8">
 				<input type='password' name="password2" style='display:none' autocomplete='passowrd' placeholder='Confirm Password' maxlength="100" minlength="8">
-				<input type='text' name="username" style='display:none' autocomplete="username" placeholder='Enter Username' maxlength="100" minlength="3">
+				<div id="authorize" style="display:none">
+					<div id="user">
+						<img class="icon">
+						<div class="name">
+							Username
+						</div>
+						<div class="desc">Description</div>
+					</div>
+					<div id="arrow"></div>
+					<div id="app">
+						<img class="icon">
+						<div class="name">App name</div>
+						<div class="desc">Description</div>
+					</div>
+				</div>
 				<input type="submit" value="Continue">
 			</form>
 		</div>

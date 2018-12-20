@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using Nancy;
 using Nancy.Authentication.Stateless;
+using Nancy.Security;
+using System.Linq;
 
 namespace Kaisei.Modules
 {
-    public class IndexModule : NancyModule
-    {
-		public IndexModule()
+	public class AccountModule : NancyModule
+	{
+		public AccountModule() : base("/account")
 		{
 			StatelessAuthentication.Enable(this, KaiseiCore.StatelessConfig);
+			//this.RequiresAuthentication();
 			Get("/", _ =>
 			{
-				if (Context.CurrentUser != null)
-					return Response.AsRedirect("/account");
-				else
-					return View["index", new { Callback = "/account" }];
+
+				return $"{Context.Request.Headers.Referrer}"; //TODO: Create account page
 			});
 		}
-    }
+	}
 }

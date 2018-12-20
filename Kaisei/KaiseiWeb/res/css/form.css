@@ -36,3 +36,72 @@ label.error
 {
 	color: #ff0064;
 }
+
+
+#authorize
+{
+	display: grid;
+	grid-template-columns: auto 20px auto;
+	grid-template-rows: 100px;
+	grid-template-areas: "User Arrow App";
+	width: 500px;
+	background-color: #eee;
+}
+
+#authorize #user
+{
+	grid-area: User;
+	display: grid;
+	grid-column-gap: 5px;
+	grid-template-columns: 100px 1fr;
+	grid-template-rows: 50px 50px;
+	grid-template-areas: "Icon Name"
+						 "Icon Description";
+	color: #fff;
+	background-color: #ff0064;
+}
+
+#authorize #arrow
+{
+	grid-area: Arrow;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 50px 0 50px 20px;
+	border-color: transparent transparent transparent #ff0064;
+}
+
+#authorize #app
+{
+	display: grid;
+	grid-area: App;
+	text-align: right;
+	grid-column-gap: 5px;
+	grid-template-columns: 1fr 100px;
+	grid-template-rows: 50px 50px;
+	grid-template-areas: "Name Icon"
+						 "Description Icon";
+}
+
+#authorize .icon
+{
+	grid-area: Icon;
+	height: 100px;
+	width: 100px;
+	border: none;
+	outline: none;
+}
+
+#authorize .name
+{
+	grid-area: Name;
+	height: 50px;
+	line-height: 50px;
+	vertical-align: bottom;
+	font-weight: bold;
+}
+
+#authorize .desc
+{
+	grid-area: Description;
+}
