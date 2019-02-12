@@ -5,6 +5,9 @@ using Nancy;
 using Nancy.Authentication.Stateless;
 using Nancy.Security;
 using System.Linq;
+using Nancy.ModelBinding;
+using Newtonsoft.Json;
+using Kaisei.DataModels;
 
 namespace Kaisei.Modules
 {
@@ -13,12 +16,19 @@ namespace Kaisei.Modules
 		public AccountModule() : base("/account")
 		{
 			StatelessAuthentication.Enable(this, KaiseiCore.StatelessConfig);
-			//this.RequiresAuthentication();
 			Get("/", _ =>
 			{
-
-				return $"{Context.Request.Headers.Referrer}"; //TODO: Create account page
+				var user = (UserModel)Context.CurrentUser;
+				if (user == null)
+					return Response.AsRedirect("/");
+				return View["account", new
+				{
+					user.Username,
+					user.Email
+				}];
+				//return $"{Context.Request.Headers.Referrer}"; //TODO: Create account page
 			});
+
 		}
 	}
 }

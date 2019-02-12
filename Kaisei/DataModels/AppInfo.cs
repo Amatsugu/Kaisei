@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 namespace Kaisei.DataModels
 {
-	public class AppInfo
+	public class AppInfo : ClaimsPrincipal
 	{
 		public string Id { get; set; }
 		public string ApiKey { get; set; }

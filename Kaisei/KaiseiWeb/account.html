@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href="res/css/style.css" rel="stylesheet">
+	<link href="res/css/form.css" rel="stylesheet">
+	<link href="res/css/account.css" rel="stylesheet">
+	<script src="res/js/three.min.js"></script>
+	<script src="res/js/jquery-3.3.1.min.js"></script>
+	<script src="res/js/perlin.js"></script>
+	<script async src="res/js/backgroundRender.js"></script>
+	<title>Kaisei</title>
+</head>
+<body>
+	<div id="background"></div>
+	<div id="content-full">
+		<div id="logo">
+			Kaisei
+		</div>
+		<div id="body">
+			<h1>Account Info</h1>
+			<div id="accountInfo">
+				<img src="/auth/user/avatar">
+				<div id="changeIcon">Change</div>
+				<div id="infoPanel">
+					<h3>Username</h3>
+					<label>@Model.Username</label>
+					<h3>Email</h3>
+					<label>@Model.Email</label>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

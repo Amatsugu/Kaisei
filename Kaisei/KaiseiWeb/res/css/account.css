@@ -1,0 +1,78 @@
+body
+{
+	align-items: unset;
+}
+
+#content-full
+{
+	min-height: 100%;
+	width: 1080px;
+	display: block;
+    box-shadow: 0px 0px 20px -5px rgb(0, 0, 0);
+    padding: 20px;
+    background: #fff;
+}
+
+#content-full #body
+{
+	width: 100%;
+	padding: 5px;
+}
+
+#content-full h1
+{
+	border-bottom: 1px solid #ff0064;
+	font-weight: 300;
+}
+
+#content-full h3
+{
+	border-bottom: 1px solid #ff0064;
+	font-weight: 300;
+}
+
+#content-full
+{
+	font-weight: 200;
+}
+
+#accountInfo
+{
+	display: grid;
+	grid-template-columns: 512px auto;
+	grid-gap: 10px;
+	grid-template-areas: "Icon Info";
+}
+
+#accountInfo img
+{
+	grid-area: Icon;
+	height: 512px;
+	width: 512px;
+	background-color: #333;
+}
+
+#accountInfo #changeIcon
+{
+	grid-area: Icon;
+	z-index: 2;
+	text-align: center;
+	line-height: 512px;
+	vertical-align: center;
+	background-color: rgba(255, 255, 255, .2);
+	transition: opacity .5s;
+	font-size: 50px;
+	opacity: 0;
+}
+
+#accountInfo #changeIcon:hover
+{
+	opacity: 1;
+}
+
+#accountInfo #infoPanel
+{
+	grid-area: Info;
+	display: flex;
+	flex-direction: column;
+}

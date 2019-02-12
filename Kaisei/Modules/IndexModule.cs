@@ -16,7 +16,7 @@ namespace Kaisei.Modules
 				if (Context.CurrentUser != null)
 					return Response.AsRedirect("/account");
 				else
-					return View["index", new { Callback = "/account" }];
+					return View["index", new { Callback = "/account", AppId = (string)null }];
 			});
 		}
     }

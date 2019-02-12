@@ -18,7 +18,12 @@ namespace Kaisei
 			{ 
 				var sessionID = nancyContext.Request.Cookies.First(c => c.Key == "session").Value;
 				return GetUserFromSessionID(sessionID);
-			}else
+			}else if(nancyContext.Request.Cookies.ContainsKey("apiKey"))
+			{
+				var apiKey = nancyContext.Request.Cookies.First(c => c.Key == "apiKey").Value;
+				return VerifyApp(apiKey);
+			}
+			else
 				return null;
 		});
 
@@ -194,7 +199,9 @@ namespace Kaisei
 		/// <returns>App Info</returns>
 		public static AppInfo GetAppInfo(string appId)
 		{
-			var app = Apps.Find($"{{ id : '{appId}'}}").First();
+			var app = Apps.Find($"{{ id : '{appId}'}}").FirstOrDefault();
+			if (app == null)
+				return null;
 			return new AppInfo()
 			{
 				Id = appId,
@@ -205,7 +212,18 @@ namespace Kaisei
 
 		public static AppInfo VerifyApp(string appApiKey)
 		{
-			throw new NotImplementedException();
+			appApiKey = Sanitize(appApiKey);
+			var app = Apps.Find($"{{ apiKey : '{appApiKey}'}}").FirstOrDefault();
+			if (app == null)
+				return null;
+			return new AppInfo
+			{
+				Id = app.GetValue("id").AsString,
+				Hostname = UnSanitize(app.GetValue("hostname").AsString),
+				Name = UnSanitize(app.GetValue("name").AsString),
+				Description = UnSanitize(app.GetValue("description").AsString),
+				ApiKey = appApiKey
+			};
 		}
 
 		/// <summary>
@@ -216,7 +234,19 @@ namespace Kaisei
 		/// <returns></returns>
 		public static UserModel GetAppUser(string apiKey, string userId)
 		{
-			return null;
+			var app = VerifyApp(apiKey);
+			if (app == null)
+				return null;
+			var userInfo = Users.Find($"{{ apps : {{ appId : '{app.Id}' }} }}").FirstOrDefault();
+			if (userInfo == null)
+				return null;
+			var user = new UserModel
+			{
+				Username = userInfo.GetValue("username").AsString,
+				Email = userInfo.GetValue("email").AsString,
+				Id = userId,
+			};
+			return user;
 		}
 
 		public static bool ValidateAppAuth(string appId, Uri origin)
@@ -239,9 +269,9 @@ namespace Kaisei
 				{ "id", id },
 				{ "name", Sanitize(app.Name) },
 				{ "description", Sanitize(app.Description) },
-				{ "owner", ownerId },
+				{ "owner", Sanitize(ownerId) },
 				{ "apiKey", apiKey },
-				{ "hostname", app.Hostname },
+				{ "hostname", Sanitize(app.Hostname) },
 			});
 			app.Id = id;
 			app.ApiKey = apiKey;
@@ -306,7 +336,8 @@ namespace Kaisei
 		/// <param name="appId">App to delete</param>
 		public static void DeleteApp(string appId)
 		{
-			throw new NotImplementedException();
+			appId = Sanitize(appId);
+			Apps.DeleteOneAsync($"{{ id : '{appId}' }}");
 		}
 
 		/// <summary>
@@ -315,7 +346,15 @@ namespace Kaisei
 		/// <param name="appInfo">The information</param>
 		public static void UpdateApp(AppInfo appInfo)
 		{
-			throw new NotImplementedException();
+			appInfo.Id = Sanitize(appInfo.Id);
+			var update = new BsonDocument();
+			if(appInfo.Name != null)
+				update.Add("name", Sanitize(appInfo.Name));
+			if (appInfo.Hostname != null)
+				update.Add("description", Sanitize(appInfo.Description));
+			if (appInfo.Hostname != null)
+				update.Add("hostname", Sanitize(appInfo.Hostname));
+			Apps.UpdateOne($"{{ id : '{appInfo.Id}' }}", update); ;
 		}
 
 		public static string Sanitize(string raw)

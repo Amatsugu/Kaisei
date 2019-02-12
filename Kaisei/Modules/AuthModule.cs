@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Nancy.ModelBinding;
 using Kaisei.DataModels;
 using Nancy.Authentication.Stateless;
+using Nancy.Security;
 
 namespace Kaisei.Modules
 {
@@ -17,43 +18,6 @@ namespace Kaisei.Modules
 		public AuthModule() : base("/auth")
 		{
 			StatelessAuthentication.Enable(this, KaiseiCore.StatelessConfig);
-			Post("/login", _ =>
-			{
-				var user = this.Bind<UserCredentials>();
-				var verifiedUser = KaiseiCore.VerifyUser(user);
-				if (verifiedUser == null)
-				{
-					return new Response
-					{
-						StatusCode = HttpStatusCode.Unauthorized
-					};
-				}else
-				{
-					return new Response
-					{
-						StatusCode = HttpStatusCode.OK,
-					}.WithCookie("session", verifiedUser.Session);
-				}
-			});
-			Post("/register", _ =>
-			{
-				var user = this.Bind<UserCredentials>();
-				var registeredUser = KaiseiCore.RegisterUser(user);
-				if (registeredUser == null)
-				{
-					return new Response
-					{
-						StatusCode = HttpStatusCode.Unauthorized
-					};
-				}
-				else
-				{
-					return new Response
-					{
-						StatusCode = HttpStatusCode.OK,
-					}.WithCookie("session", registeredUser.Session);
-				}
-			});
 
 			//User
 			Get("/user", _ =>
@@ -73,14 +37,13 @@ namespace Kaisei.Modules
 
 
 			//App
-			Get("/app", _ =>
-			{
-				var app = this.Bind<AppInfo>();
-				return Response.AsJson(KaiseiCore.GetAppInfo(app.Id));
-			});
-
 			Post("/app/sso", _ =>
 			{
+				if (Context.CurrentUser == null)
+					return new Response
+					{
+						StatusCode = HttpStatusCode.Unauthorized
+					};
 				var sso = this.Bind();
 				var userId = ((UserModel)Context.CurrentUser).Id;
 				return KaiseiCore.AuthorizeApp(sso.appId, userId);

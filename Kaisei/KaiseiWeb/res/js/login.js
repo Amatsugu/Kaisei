@@ -2,6 +2,8 @@ var main;
 var verified;
 var authorize;
 var submitBtn;
+var appId;
+var authId;
 $(document).ready(function(){
 	var state = 0;
 	main = $("#mainForm");
@@ -16,6 +18,8 @@ $(document).ready(function(){
 	submitBtn = $("input[type=submit]");
 	authorize = $("#authorize");
 	verified = main.data("verified");
+	appId = main.data("appid");
+	authId = $("input[name='authId']");
 	/*user.fadeOut(500);
 	password.fadeOut(500, function(){
 		LoadAuthorize();
@@ -37,6 +41,7 @@ $(document).ready(function(){
 		});
 	}
 	main.on("submit", function(e){
+		error.animate({opacity : 0 }, 500);
 		switch(state)
 		{
 			case 0: //User Login
@@ -44,7 +49,7 @@ $(document).ready(function(){
 
 				$.ajax({
 					method: "POST",
-					url: "/auth/login",
+					url: "/login",
 					data: {
 						Email: user.val(),
 						Password: password.val()
@@ -52,6 +57,11 @@ $(document).ready(function(){
 				}).done(function(){
 					console.log("Login");
 					password.fadeOut(500);
+					username.prop("disabled", true);
+					user.prop("disabled", true);
+					password.prop("disabled", true);
+					newpassword.prop("disabled", true);
+					password2.prop("disabled", true);
 					user.fadeOut(500, function()
 					{
 						state = 2; //Goto Logged in State
@@ -115,7 +125,7 @@ $(document).ready(function(){
 				}
 				$.ajax({
 					method: "POST",
-					url: "/auth/register",
+					url: "/login/register",
 					data: {
 						Email: user.val(),
 						Username: un,
@@ -125,13 +135,18 @@ $(document).ready(function(){
 					//Transitions
 					error.animate({ opacity: 0 }, 500);
 					username.fadeOut(500);
+					user.prop("disabled", true);
+					username.prop("disabled", true);
+					password.prop("disabled", true);
+					password2.prop("disabled", true);
+					newpassword.prop("disabled", true);
 					password2.fadeOut(500);
 					newpassword.fadeOut(500, function(){
 						state = 2;
 						LoadAuthorize();
 					});
 				}).fail(function(){
-					
+					//TODO: Add error message
 				});
 				
 			break;
@@ -144,6 +159,12 @@ $(document).ready(function(){
 
 function LoadAuthorize()
 {
+	if(appId == null || appId == "" || appId == undefined)
+	{
+		authId.prop("disabled", true);
+		main.attr("method", "get");
+		main.submit();
+	}
 	var userName = $("#authorize #user .name");
 	var userDesc = $("#authorize #user .desc");
 	var appName = $("#authorize #user .name");
@@ -158,11 +179,8 @@ function LoadAuthorize()
 	});
 
 	$.ajax({
-		url: "/auth/app",
-		method: "POST",
-		data:{
-			Id: main.data("appId")
-		}
+		url: "/app/" + appId,
+		method: "GET",
 	}).done(function(e){
 		console.log(e);
 		appName.text(e.name);
