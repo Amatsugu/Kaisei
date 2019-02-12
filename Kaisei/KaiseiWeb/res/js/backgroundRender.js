@@ -23,7 +23,7 @@ $(document).ready(function(){
 	aspect = window.innerWidth /  window.innerHeight;
 	camera = new THREE.OrthographicCamera( 0, frustumSize * aspect, frustumSize, 0, 0.1, 1000 );
 	renderer = new THREE.WebGLRenderer({
-		antialia: true,
+		antialias: true,
 	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	$("#background").append(renderer.domElement);
