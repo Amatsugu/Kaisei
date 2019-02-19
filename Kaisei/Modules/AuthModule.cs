@@ -37,16 +37,16 @@ namespace Kaisei.Modules
 
 
 			//App
-			Post("/app/sso", _ =>
+			Post("/sso", _ =>
 			{
 				if (Context.CurrentUser == null)
 					return new Response
 					{
 						StatusCode = HttpStatusCode.Unauthorized
 					};
-				var sso = this.Bind();
+				var sso = this.Bind<SSOData>();
 				var userId = ((UserModel)Context.CurrentUser).Id;
-				return KaiseiCore.AuthorizeApp(sso.appId, userId);
+				return KaiseiCore.AuthorizeApp(sso.AppId, userId);
 			});
 
 

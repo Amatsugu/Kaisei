@@ -18,7 +18,7 @@ namespace Kaisei.Modules
 
 			Get("/{id}", p =>
 			{
-				return Response.AsJson(KaiseiCore.GetAppInfo((string)p.id));
+				return Response.AsJson(KaiseiCore.GetAppInfo(((string)p.id).Replace(' ', '+')));
 			});
 
 			Get("/user/{id}", p =>
@@ -29,7 +29,11 @@ namespace Kaisei.Modules
 						StatusCode = HttpStatusCode.Unauthorized
 					};
 				var apiKey = ((AppInfo)Context.CurrentUser).ApiKey;
-				return KaiseiCore.GetAppUser(apiKey, p.id);
+				var user = KaiseiCore.GetAppUser(apiKey, ((string)p.id).Replace(' ', '+'));
+				if (user == null)
+					return new Response { StatusCode = HttpStatusCode.Unauthorized };
+				else
+					return Response.AsJson(user);
 			});
 
 			Post("/sso/confirm", _ =>
@@ -39,9 +43,9 @@ namespace Kaisei.Modules
 					{
 						StatusCode = HttpStatusCode.Unauthorized
 					};
-				var sso = this.Bind();
+				var sso = this.Bind<SSOData>();
 				var app = (AppInfo)Context.CurrentUser;
-				return KaiseiCore.ConfirmAuthorization(app.ApiKey, sso.authId);
+				return KaiseiCore.ConfirmAuthorization(app.ApiKey, sso.AuthId) ?? new Response { StatusCode = HttpStatusCode.Unauthorized };
 			});
 		}
 	}

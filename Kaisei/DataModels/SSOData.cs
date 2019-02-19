@@ -9,5 +9,6 @@ namespace Kaisei.DataModels
 		public string Callback { get; set; }
 		public bool Verified { get; set; }
 		public string AppId { get; set; }
+		public string AuthId { get; set; }
 	}
 }

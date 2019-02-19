@@ -177,6 +177,7 @@ namespace Kaisei
 				return null;
 		}
 
+
 		/// <summary>
 		/// Get the user from the session ID
 		/// </summary>
@@ -237,7 +238,7 @@ namespace Kaisei
 			var app = VerifyApp(apiKey);
 			if (app == null)
 				return null;
-			var userInfo = Users.Find($"{{ apps : {{ appId : '{app.Id}' }} }}").FirstOrDefault();
+			var userInfo = Users.Find($"{{ 'apps.appId' : '{app.Id}' }}").FirstOrDefault();
 			if (userInfo == null)
 				return null;
 			var user = new UserModel
@@ -308,8 +309,8 @@ namespace Kaisei
 			apiKey = Sanitize(apiKey);
 			authId = Sanitize(authId);
 			//Find User to authorize
-			var user = Users.Find($"{{ authorizations : '{authId}' }}").FirstOrDefault();
-			if (user == null || user.IsBsonNull)
+			var user = Users.Find($"{{ 'authorizations.authId' : '{authId}' }}").FirstOrDefault();
+			if (user == null)
 				return null;
 			var userId = user.GetValue("id").AsString;
 			//Get Auth details
@@ -318,13 +319,13 @@ namespace Kaisei
 			var app = Apps.Find($"{{ id : '{appId}', apiKey : '{apiKey}' }}").FirstOrDefault();
 			//Clear Auths
 			ClearAuthorizations(userId);
-			if (app == null || app.IsBsonNull)
+			if (app == null)
 			{
 				return null;
 			}
 			//Create app userid
 			var a_userId = GetNewID();
-			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $push {{ apps : {{ appId : '{appId}', appUserId : '{a_userId}' }} }} }}");
+			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $push : {{ apps : {{ appId : '{appId}', appUserId : '{a_userId}' }} }} }}");
 
 			return a_userId;
 		}
@@ -363,7 +364,7 @@ namespace Kaisei
 			raw = raw.Replace(">", "&gt");
 			raw = raw.Replace("\'", "&quot");
 			raw = raw.Replace("\"", "&apos");
-			raw = Uri.EscapeDataString(raw);
+			//raw = Uri.EscapeDataString(raw);
 			return raw;
 		}
 

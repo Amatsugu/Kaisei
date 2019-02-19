@@ -4,14 +4,15 @@ var authorize;
 var submitBtn;
 var appId;
 var authId;
+var username, user, password, password, newpassword;
 $(document).ready(function(){
 	var state = 0;
 	main = $("#mainForm");
-	var user = $("input[name = 'UserEmail']");
-	var password = $("input[name='password']");
-	var newpassword = $("input[name='newpassword']");
-	var password2 = $("input[name='password2']");
-	var username = $("input[name='username']");
+	user = $("input[name = 'UserEmail']");
+	password = $("input[name='password']");
+	newpassword = $("input[name='newpassword']");
+	password2 = $("input[name='password2']");
+	username = $("input[name='username']");
 	var error = $("label.error");
 	var pw = "";
 	var un = "";
@@ -25,7 +26,7 @@ $(document).ready(function(){
 		LoadAuthorize();
 	});
 	return;*/
-	if(verified == true)
+	if(verified == "True")
 	{
 		$.ajax({
 			method: "GET",
@@ -57,11 +58,6 @@ $(document).ready(function(){
 				}).done(function(){
 					console.log("Login");
 					password.fadeOut(500);
-					username.prop("disabled", true);
-					user.prop("disabled", true);
-					password.prop("disabled", true);
-					newpassword.prop("disabled", true);
-					password2.prop("disabled", true);
 					user.fadeOut(500, function()
 					{
 						state = 2; //Goto Logged in State
@@ -135,11 +131,6 @@ $(document).ready(function(){
 					//Transitions
 					error.animate({ opacity: 0 }, 500);
 					username.fadeOut(500);
-					user.prop("disabled", true);
-					username.prop("disabled", true);
-					password.prop("disabled", true);
-					password2.prop("disabled", true);
-					newpassword.prop("disabled", true);
 					password2.fadeOut(500);
 					newpassword.fadeOut(500, function(){
 						state = 2;
@@ -151,24 +142,54 @@ $(document).ready(function(){
 				
 			break;
 			case 2: //Authorize
+				CleanForm();
+				e.preventDefault();
+				$.ajax({
+					url: "/auth/sso",
+					method : "POST",
+					data: {
+						appId : appId
+					}
+				}).done(function(e)
+				{
+					state = 3;
+					console.log(e);
+					authId.val(e);
+					main.submit();
+				}).fail(function(e)
+				{
+					console.log(e);
+				});
+			break;
+			case 3: //Redirect
 				console.log("Redirecting");
 			break;
 		}
 	});
 });
 
+function CleanForm()
+{
+	user.remove();
+	username.remove();
+	password.remove();
+	password2.remove();
+	newpassword.remove();
+}
+
 function LoadAuthorize()
 {
 	if(appId == null || appId == "" || appId == undefined)
 	{
-		authId.prop("disabled", true);
+		CleanForm();
+		authId.remove();
 		main.attr("method", "get");
 		main.submit();
 	}
 	var userName = $("#authorize #user .name");
 	var userDesc = $("#authorize #user .desc");
-	var appName = $("#authorize #user .name");
-	var appDesc = $("#authorize #user .desc");
+	var appName = $("#authorize #app .name");
+	var appDesc = $("#authorize #app .desc");
 	$.ajax({
 		url: "/auth/user",
 		method: "GET"
