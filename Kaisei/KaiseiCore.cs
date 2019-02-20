@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -150,6 +151,37 @@ namespace Kaisei
 
 		}
 
+		public static void UploadIcon(string userId, Stream file, string mime)
+		{
+			Users.UpdateOne($"{{ id : '{userId}' }}", new BsonDocument
+			{
+				{ "$set", new BsonDocument
+					{
+						{ "icon", new BsonBinaryData(StreamToByteA(file)) },
+						{ "icon-mime", mime }
+					}
+				}
+			});
+		}
+
+		private static byte[] StreamToByteA(Stream stream)
+		{
+			byte[] bArray = new byte[stream.Length];
+			stream.Read(bArray, 0, (int)stream.Length);
+			return bArray;
+		}
+
+		public static (Stream icon, string mime) GetIcon(string userId)
+		{
+			var user = Users.Find($"{{ id : '{userId}' }}").FirstOrDefault();
+			if (user == null)
+				return default;
+			if (user.TryGetValue("icon", out var icon))
+				return (new MemoryStream(icon.AsByteArray), user.GetValue("icon-mime").AsString);
+			else
+				return default;
+		}
+
 		/// <summary>
 		/// Verify a user login
 		/// </summary>
@@ -206,8 +238,9 @@ namespace Kaisei
 			return new AppInfo()
 			{
 				Id = appId,
-				Name = Uri.UnescapeDataString(app.GetValue("name").AsString),
-				Description = Uri.UnescapeDataString(app.GetValue("description").AsString)
+				Name = UnSanitize(app.GetValue("name").AsString),
+				Description = UnSanitize(app.GetValue("description").AsString),
+				Hostname = UnSanitize(app.GetValue("hostname").AsString)
 			};
 		}
 
@@ -250,6 +283,43 @@ namespace Kaisei
 			return user;
 		}
 
+		public static AppInfo[] GetUserAuthedApps(string userId)
+		{
+			var apps = Users.Find($"{{ id : '{userId}' }}").FirstOrDefault()?.GetValue("apps").AsBsonArray;
+			var appInfo = new AppInfo[apps.Count];
+			var i = 0;
+			foreach(var app in apps)
+			{
+				appInfo[i++] = GetAppInfo(app.AsBsonDocument.GetValue("appId").AsString);
+			}
+			return appInfo;
+		}
+
+		public static AppInfo[] GetUsersApps(string userId)
+		{
+			var apps = Apps.Find($"{{ owner : '{userId}' }}").ToList();
+			var appInfo = new AppInfo[apps.Count];
+			var i = 0;
+			foreach (var app in apps)
+			{
+				appInfo[i++] = new AppInfo
+				{
+					Id = app.GetValue("id").AsString,
+					Name = app.GetValue("name").AsString,
+					Description = app.GetValue("description").AsString,
+					Hostname = app.GetValue("hostname").AsString
+
+				};
+			}
+			return appInfo;
+		}
+
+		/// <summary>
+		/// Checks whether an app auth is valid
+		/// </summary>
+		/// <param name="appId">App Id</param>
+		/// <param name="origin">Origin uri</param>
+		/// <returns></returns>
 		public static bool ValidateAppAuth(string appId, Uri origin)
 		{
 			return !Apps.Find($"{{ id : {Sanitize(appId)}, hostname : {origin.Host} }}").First().IsBsonNull;
@@ -293,9 +363,26 @@ namespace Kaisei
 			return authId;
 		}
 
+		/// <summary>
+		/// Remove the autorization for a given app
+		/// </summary>
+		/// <param name="userId">The user to revoke the app from</param>
+		/// <param name="appId">The app to revoke</param>
+		/// <returns></returns>
+		public static bool RevokeApp(string userId, string appId)
+		{
+			var res = Users.UpdateMany($"{{ id : '{userId}' }}", $"{{ $pull : {{ apps: {{ appId : '{appId}' }} }} }}");
+			return res.IsModifiedCountAvailable && res.ModifiedCount > 0;
+		}
+
 		public static void ClearAuthorizations(string userId)
 		{
 			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $set : {{ authorizations : [] }} }}");
+		}
+
+		public static bool IsAppAuthed(string appId, string userId)
+		{
+			return Users.CountDocuments($"{{ id : '{userId}', 'apps.appId' : '{appId}' }}") > 0;
 		}
 
 		/// <summary>
@@ -304,7 +391,7 @@ namespace Kaisei
 		/// <param name="apiKey">The Api Key for the app</param>
 		/// <param name="authId">The authorization id</param>
 		/// <returns>The app sepcific user id</returns>
-		public static string ConfirmAuthorization(string apiKey, string authId)
+		public static string ConfirmAuthorization(string apiKey, string appId, string authId)
 		{
 			apiKey = Sanitize(apiKey);
 			authId = Sanitize(authId);
@@ -315,19 +402,19 @@ namespace Kaisei
 			var userId = user.GetValue("id").AsString;
 			//Get Auth details
 			var authorization = user.GetValue("authorizations").AsBsonArray.First(a => a.AsBsonDocument.GetValue("authId") == authId);
-			var appId = authorization.AsBsonDocument.GetValue("appId").AsString;
+			var authAppId = authorization.AsBsonDocument.GetValue("appId").AsString;
 			var app = Apps.Find($"{{ id : '{appId}', apiKey : '{apiKey}' }}").FirstOrDefault();
 			//Clear Auths
 			ClearAuthorizations(userId);
-			if (app == null)
-			{
+			if (appId != authAppId)
 				return null;
-			}
+			if (IsAppAuthed(appId, userId))
+				return null;
 			//Create app userid
-			var a_userId = GetNewID();
-			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $push : {{ apps : {{ appId : '{appId}', appUserId : '{a_userId}' }} }} }}");
+			var appUserId = GetNewID();
+			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $push : {{ apps : {{ appId : '{appId}', appUserId : '{appUserId}' }} }} }}");
 
-			return a_userId;
+			return appUserId;
 		}
 
 

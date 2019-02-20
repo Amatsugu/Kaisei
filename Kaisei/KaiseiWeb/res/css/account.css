@@ -38,18 +38,41 @@ body
 
 #accountInfo
 {
+	--iconSize: 256px;
 	display: grid;
-	grid-template-columns: 512px auto;
+	grid-template-columns: var(--iconSize) auto 500px;
 	grid-gap: 10px;
-	grid-template-areas: "Icon Info";
+	grid-template-areas: "Icon Info Stats";
+}
+
+#accountInfo .edit::after
+{
+	content: "Edit";
+	float: right;
 }
 
 #accountInfo img
 {
 	grid-area: Icon;
-	height: 512px;
-	width: 512px;
-	background-color: #333;
+	height: var(--iconSize);
+	width: var(--iconSize);
+	background-color: #dfdfdf;
+	/* filter: brightness(1.5); */
+}
+
+#accountInfo form,
+#accountInfo input
+{
+	grid-area: Icon;
+	height: var(--iconSize);
+	width: var(--iconSize);
+	opacity: 0;
+	outline: none;
+	z-index: 3;
+	padding: 0;
+	margin: 0;
+	display: block;
+	cursor: default;
 }
 
 #accountInfo #changeIcon
@@ -57,7 +80,7 @@ body
 	grid-area: Icon;
 	z-index: 2;
 	text-align: center;
-	line-height: 512px;
+	line-height: var(--iconSize);
 	vertical-align: center;
 	background-color: rgba(255, 255, 255, .2);
 	transition: opacity .5s;
@@ -65,7 +88,30 @@ body
 	opacity: 0;
 }
 
-#accountInfo #changeIcon:hover
+#accountInfo .progress
+{
+	height: 100%;
+	width: 0%;
+	z-index: 4;
+	grid-area: Icon;
+	transition: width;
+	background-color: #ff0064;
+}
+
+#accountInfo #uploadMessage
+{
+	grid-area: Icon;
+	display: none;
+	z-index: 5;
+	text-align: center;
+	line-height: var(--iconSize);
+	vertical-align: center;
+	background-color: rgba(255, 255, 255, .2);
+	transition: opacity .5s;
+	font-size: 50px;
+}
+
+#accountInfo form:hover + #changeIcon
 {
 	opacity: 1;
 }
@@ -76,3 +122,124 @@ body
 	display: flex;
 	flex-direction: column;
 }
+
+#accountInfo #stats
+{
+	grid-area: Stats;
+}
+
+#stats #statsBox
+{
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-template-rows: auto auto;
+	grid-gap: 10px;
+
+}
+
+#statsBox .statBox
+{
+	display: block;
+	width: 150px;
+	height: 100px;
+	/* border: solid 1px #000; */
+	margin: 5px;
+}
+
+#statsBox .statBox .statName
+{
+	font-size: 18px;
+	font-weight: 400;
+}
+
+#statsBox .statBox .stat
+{
+	font-size: 40px;
+}
+
+#body #myApps,
+#body #authAppList
+{
+	display: block;
+}
+
+.app
+{
+	display: grid;
+	grid-template-columns: auto 150px;
+	grid-gap: 5px;
+	grid-template-rows: 65px 15px;
+	grid-template-areas: "Name Button"
+						 "Host Button";
+	border: solid 1px #eee;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-left: none;
+	border-right: none;
+	margin-bottom: 5px;
+}
+
+.app .name
+{
+	grid-area: Name;
+	font-size: 60px;
+}
+
+.app .host
+{
+	grid-area: Host;
+	font-size: 15px;
+}
+
+.app button
+{
+	grid-area: Button;
+	height: 50px;
+	align-self: center;
+}
+
+.app .deleted
+{
+	grid-column-start: 1;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 3;
+	z-index: 1;
+	background-color: #fff;
+	font-size: 30px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	display: flex;
+	justify-content: center;
+    align-items: center;
+}
+
+button
+{
+	background: rgb(255, 0, 100);
+	border: none;
+	color: #fff;
+	font-size: 20px;
+	font-weight: 300;
+	transition: background .5s;
+	outline: none;
+}
+
+button:hover
+{
+	background: rgb(200, 0, 90);
+}
+
+a
+{
+	color: #ff0064;
+	transition: color .5s;
+	text-decoration: none;
+}
+
+a:hover
+{
+	color: rgb(200, 0, 90);
+
+}
+

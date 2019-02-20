@@ -9,8 +9,10 @@
 	<link href="res/css/account.css" rel="stylesheet">
 	<script src="res/js/three.min.js"></script>
 	<script src="res/js/jquery-3.3.1.min.js"></script>
+	<script src="res/js/jquery.dm-uploader.js"></script>
 	<script src="res/js/perlin.js"></script>
 	<script async src="res/js/backgroundRender.js"></script>
+	<script async src="res/js/account.js"></script>
 	<title>Kaisei</title>
 </head>
 <body>
@@ -22,14 +24,35 @@
 		<div id="body">
 			<h1>Account Info</h1>
 			<div id="accountInfo">
-				<img src="/auth/user/avatar">
+				<img src="/user/avatar">
+				<form>
+					<input type="file" accept="image/*">
+				</form>
 				<div id="changeIcon">Change</div>
+				<div class="progress"></div>
+				<div id="uploadMessage"></div>
 				<div id="infoPanel">
-					<h3>Username</h3>
+					<h3 class="edit" id="username">Username</h3>
 					<label>@Model.Username</label>
-					<h3>Email</h3>
+					<h3 class="edit" id="email">Email</h3>
 					<label>@Model.Email</label>
+					<h3 class="edit" id="password">Password</h3>
+					<label>***********</label>
 				</div>
+				<div id="stats">
+					<h3>Stats</h3>
+					<div id="statsBox">
+						
+					</div>
+				</div>
+			</div>
+			<h1>Authorized Apps</h1>
+			<div id="authAppList">
+				Loading Apps...
+			</div>
+			<h1>My Apps</h1>
+			<div id="myApps">
+				Loading Apps...
 			</div>
 		</div>
 	</div>

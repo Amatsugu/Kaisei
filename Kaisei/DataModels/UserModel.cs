@@ -12,5 +12,6 @@ namespace Kaisei.DataModels
 		public string Email { get; set; }
 		public string Id { get; set; }
 		public string Session { get; set; }
+
 	}
 }

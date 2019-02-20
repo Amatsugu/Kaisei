@@ -18,24 +18,7 @@ namespace Kaisei.Modules
 		public AuthModule() : base("/auth")
 		{
 			StatelessAuthentication.Enable(this, KaiseiCore.StatelessConfig);
-
-			//User
-			Get("/user", _ =>
-			{
-				if (Context.CurrentUser == null)
-					return new Response
-					{
-						StatusCode = HttpStatusCode.Unauthorized
-					};
-				return Response.AsJson(Context.CurrentUser);
-			});
-
-			Get("/user/avatar", _ =>
-			{
-				return "";
-			});
-
-
+			
 			//App
 			Post("/sso", _ =>
 			{

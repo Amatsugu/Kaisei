@@ -23,29 +23,29 @@ namespace Kaisei.Modules
 
 			Get("/user/{id}", p =>
 			{
-				if (Context.CurrentUser == null)
+				if (!(Context.CurrentUser is AppInfo app))
 					return new Response
 					{
 						StatusCode = HttpStatusCode.Unauthorized
 					};
 				var apiKey = ((AppInfo)Context.CurrentUser).ApiKey;
-				var user = KaiseiCore.GetAppUser(apiKey, ((string)p.id).Replace(' ', '+'));
-				if (user == null)
+				var appUser = KaiseiCore.GetAppUser(apiKey, ((string)p.id).Replace(' ', '+'));
+				if (appUser == null)
 					return new Response { StatusCode = HttpStatusCode.Unauthorized };
 				else
-					return Response.AsJson(user);
+					return Response.AsJson(appUser);
 			});
 
 			Post("/sso/confirm", _ =>
 			{
-				if (Context.CurrentUser == null)
+				if (!(Context.CurrentUser is AppInfo app))
 					return new Response
 					{
 						StatusCode = HttpStatusCode.Unauthorized
 					};
 				var sso = this.Bind<SSOData>();
-				var app = (AppInfo)Context.CurrentUser;
-				return KaiseiCore.ConfirmAuthorization(app.ApiKey, sso.AuthId) ?? new Response { StatusCode = HttpStatusCode.Unauthorized };
+				//var app = (AppInfo)Context.CurrentUser;
+				return KaiseiCore.ConfirmAuthorization(app.ApiKey, app.Id, sso.AuthId) ?? new Response { StatusCode = HttpStatusCode.Unauthorized };
 			});
 		}
 	}

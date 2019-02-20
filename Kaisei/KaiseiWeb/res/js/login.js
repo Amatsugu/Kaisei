@@ -30,9 +30,10 @@ $(document).ready(function(){
 	{
 		$.ajax({
 			method: "GET",
-			url: "auth/user",
+			url: "/user"
 		}).done(function(e){ //Skip to Authorize
 			state = 2;
+			// console.log(e);
 			user.fadeOut(500);
 			password.fadeOut(500, function(){
 				LoadAuthorize();
@@ -60,7 +61,7 @@ $(document).ready(function(){
 					password.fadeOut(500);
 					user.fadeOut(500, function()
 					{
-						state = 2; //Goto Logged in State
+						state = 3; //Goto Logged in State
 						LoadAuthorize();
 					});
 				}).fail(function(){
@@ -153,7 +154,7 @@ $(document).ready(function(){
 				}).done(function(e)
 				{
 					state = 3;
-					console.log(e);
+					// console.log(e);
 					authId.val(e);
 					main.submit();
 				}).fail(function(e)
@@ -182,19 +183,37 @@ function LoadAuthorize()
 	if(appId == null || appId == "" || appId == undefined)
 	{
 		CleanForm();
+		state = 3;
 		authId.remove();
 		main.attr("method", "get");
 		main.submit();
 	}
+
+	$.ajax({
+		url: "/user/isAuth",
+		data: {
+			AppId : appId
+		}
+	}).done(function(e){
+		console.log(e);
+		if(e == true)
+		{
+			CleanForm();
+			main.prepend("You have already authorized this app!");
+			//TODO: Give SSO Login
+			submitBtn.remove();
+		}
+	});
+
 	var userName = $("#authorize #user .name");
 	var userDesc = $("#authorize #user .desc");
 	var appName = $("#authorize #app .name");
 	var appDesc = $("#authorize #app .desc");
 	$.ajax({
-		url: "/auth/user",
+		url: "/user",
 		method: "GET"
 	}).done(function(e){
-		console.log(e);
+		// console.log(e);
 		userName.text(e.username);
 		userDesc.text(e.email);
 	});
@@ -203,7 +222,7 @@ function LoadAuthorize()
 		url: "/app/" + appId,
 		method: "GET",
 	}).done(function(e){
-		console.log(e);
+		// console.log(e);
 		appName.text(e.name);
 		appDesc.text(e.description);
 	});
