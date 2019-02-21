@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Nancy;
-using JWT;
-using JWT.Builder;
-using JWT.Algorithms;
 using Newtonsoft.Json;
 using Nancy.ModelBinding;
 using Kaisei.DataModels;
@@ -41,6 +38,39 @@ namespace Kaisei.Modules
 					post.Verified = true;
 				}
 				return View["Index", post];
+			});
+
+			Post("/verifyPassword", _ =>
+			{
+				if (!(Context.CurrentUser is UserModel user))
+					return new Response
+					{
+						StatusCode = HttpStatusCode.Unauthorized
+					};
+				var credentials = this.Bind<UserCredentials>();
+				user = KaiseiCore.VerifyUser(credentials);
+				if(user == null)
+					return new Response
+					{
+						StatusCode = HttpStatusCode.Unauthorized
+					};
+				else
+					return new Response
+					{
+						StatusCode = HttpStatusCode.OK
+					};
+			});
+
+			Post("/updateUser", _ =>
+			{
+				if (!(Context.CurrentUser is UserModel user))
+					return new Response
+					{
+						StatusCode = HttpStatusCode.Unauthorized
+					};
+				var creds = this.Bind<UserCredentials>();
+				KaiseiCore.UpdateUserInfo(user, creds);
+				return new Response { StatusCode = HttpStatusCode.OK };
 			});
 		}
     }

@@ -188,7 +188,7 @@ function LoadAuthorize()
 		main.attr("method", "get");
 		main.submit();
 	}
-
+	$("#user .icon").attr("src", "/user/avatar");
 	$.ajax({
 		url: "/user/isAuth",
 		data: {

@@ -58,3 +58,74 @@ body
 	flex-direction: column;
 	height: 100%;
 }
+
+#windowOverlay
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	z-index: 5;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+#windowOverlay #window
+{
+	display: grid;
+	grid-template-columns: auto 50px;
+	grid-template-rows: 50px auto;
+	grid-template-areas: "Title Close"
+						 "Content Content";
+	height: auto;
+	width: 700px;
+	background-color: #fff;
+	box-shadow: 0px 0px 20px -5px rgb(0, 0, 0);
+
+}
+
+#window #header
+{
+	grid-row: 1;
+	grid-column-start: 1;
+	grid-column-end: 3;
+	font-weight: 100;
+	text-align: center;
+	line-height: 50px;
+	font-size: 30px;
+	background-color: #ff0064;
+	color:#fff;
+}
+
+#window button
+{
+	grid-area: Close;
+}
+
+#window #windowBody
+{
+	grid-area: Content;
+	font-weight: 200;
+	padding: 10px;
+}
+
+#window #windowBody form
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.noMargin
+{
+	margin: 0;
+}
+
+.autoSize
+{
+	height: auto;
+	width: auto;
+}

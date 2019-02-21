@@ -25,6 +25,7 @@ body
 	font-weight: 300;
 }
 
+#windowBody h3,
 #content-full h3
 {
 	border-bottom: 1px solid #ff0064;
@@ -166,17 +167,24 @@ body
 .app
 {
 	display: grid;
-	grid-template-columns: auto 150px;
+	grid-template-columns: 85px auto 150px;
 	grid-gap: 5px;
 	grid-template-rows: 65px 15px;
-	grid-template-areas: "Name Button"
-						 "Host Button";
+	grid-template-areas: "Icon Name Button"
+						 "Icon Host Button";
 	border: solid 1px #eee;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	border-left: none;
 	border-right: none;
 	margin-bottom: 5px;
+}
+
+.app img
+{
+	grid-area: Icon;
+	height: 85px;
+	width: 85px;
 }
 
 .app .name
@@ -201,7 +209,7 @@ body
 .app .deleted
 {
 	grid-column-start: 1;
-	grid-column-end: 3;
+	grid-column-end: 4;
 	grid-row-start: 1;
 	grid-row-end: 3;
 	z-index: 1;
@@ -225,6 +233,14 @@ button
 	outline: none;
 }
 
+button.inline
+{
+	padding-left: 10px;
+	padding-right: 10px;
+	margin: 0px 5px 0px 5px;
+	/* width: 100px; */
+}
+
 button:hover
 {
 	background: rgb(200, 0, 90);
@@ -241,5 +257,25 @@ a:hover
 {
 	color: rgb(200, 0, 90);
 
+}
+
+
+#myAppsHead
+{
+	display: grid;
+	grid-template-columns: auto 150px;
+	grid-template-areas: "h1 Btn"
+}
+
+#myAppsHead h1
+{
+	grid-column-start: 1;
+	grid-column-end: 3;
+	grid-row: 1;
+}
+
+#myAppsHead button
+{
+	grid-area: Btn;
 }
 

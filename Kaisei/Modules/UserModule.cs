@@ -58,7 +58,7 @@ namespace Kaisei.Modules
 				return KaiseiCore.GetUsersApps(user.Id);
 			});
 
-			Post("/icon", _ =>
+			Post("/avatar", _ =>
 			{
 				if (!(Context.CurrentUser is UserModel user))
 					return new Response

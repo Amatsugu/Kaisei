@@ -19,7 +19,6 @@ namespace Kaisei
 				}
 			}, new Uri(hostUri));
 			host.Start();
-			Console.WriteLine(KaiseiCore.Users.Find("{ id : 'iV71m5jq0EiqpVk5acoHTg'}").First());
 			Console.WriteLine($"Hosting at {hostUri}");
 			Console.ReadLine();
 			host.Dispose();

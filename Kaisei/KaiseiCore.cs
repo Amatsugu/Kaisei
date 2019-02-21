@@ -8,6 +8,7 @@ using Kaisei.DataModels;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nancy.Authentication.Stateless;
+using SkiaSharp;
 
 namespace Kaisei
 {
@@ -151,26 +152,128 @@ namespace Kaisei
 
 		}
 
+		/// <summary>
+		/// Resize & Crop an image to 512x512
+		/// </summary>
+		/// <param name="file">The stream that contains the image</param>
+		/// <returns>The resized and cropped image</returns>
+		public static (byte[] file,string mime) ResizeIcon(Stream file, string mime)
+		{
+			var img = SKBitmap.Decode(file);
+			file.Position = 0;
+			byte[] newFile = null;
+			if (img.Width == 512 && img.Height == 512)
+				return (StreamToByteA(file), mime);
+			if ((img.Width == img.Height))
+			{
+				var newImg = img.Resize(new SKImageInfo(512, 512), SKFilterQuality.High);
+				var skimg = SKImage.FromBitmap(newImg);
+				var data = skimg.Encode();
+				newFile = data.ToArray();
+				//newFile.Position = 0;
+				data.Dispose();
+				skimg.Dispose();
+			}
+			else
+			{
+				int tH, tW;
+				float r;
+				if (img.Height > img.Width)
+					r = img.Width / (float)512;
+				else
+					r = img.Height / (float)512;
+				tW = (int)(img.Width / r);
+				tH = (int)(img.Height / r);
+				var downImg = img.Resize(new SKImageInfo(tW, tH), SKFilterQuality.High);
+				var skimg = SKImage.FromBitmap(downImg);
+				int h, w, t, l;
+				if (skimg.Height > skimg.Width)
+				{
+					h = Math.Min(512, skimg.Width);
+					w = h;
+					t = skimg.Height - (w / 2) - (skimg.Height / 2);
+					l = 0;
+				}
+				else
+				{
+					w = Math.Min(512, skimg.Height);
+					h = w;
+					l = skimg.Width - (h / 2) - (skimg.Width / 2);
+					t = 0;
+				}
+				var cropRect = new SKRectI(l, t, l + w, t + h);
+
+				var crop = skimg.Subset(cropRect);
+				var data = crop.Encode();
+				newFile = data.ToArray();
+				data.Dispose();
+				crop.Dispose();
+				skimg.Dispose();
+				downImg.Dispose();
+			}
+			img.Dispose();
+			file.Dispose();
+			return (newFile, "image/png");
+		}
+
+		/// <summary>
+		/// Upload an icon to the database
+		/// </summary>
+		/// <param name="userId">The user the icon belongs to</param>
+		/// <param name="file">The stream containing the image</param>
+		/// <param name="mime">The mime type</param>
 		public static void UploadIcon(string userId, Stream file, string mime)
 		{
+			var (f, m) = ResizeIcon(file, mime);
 			Users.UpdateOne($"{{ id : '{userId}' }}", new BsonDocument
 			{
 				{ "$set", new BsonDocument
 					{
-						{ "icon", new BsonBinaryData(StreamToByteA(file)) },
-						{ "icon-mime", mime }
+						{ "icon", new BsonBinaryData(f) },
+						{ "icon-mime", m }
 					}
 				}
 			});
 		}
 
+		/// <summary>
+		/// Upload an icon to the database
+		/// </summary>
+		/// <param name="appId">The app the icon belongs to</param>
+		/// <param name="file">The stream containing the image</param>
+		/// <param name="mime">The mime type</param>
+		public static void UploadAppIcon(string appId, Stream file, string mime)
+		{
+			var (f, m) = ResizeIcon(file, mime);
+			Apps.UpdateOne($"{{ id : '{appId}' }}", new BsonDocument
+			{
+				{ "$set", new BsonDocument
+					{
+						{ "icon", new BsonBinaryData(f) },
+						{ "icon-mime", m }
+					}
+				}
+			});
+		}
+
+		/// <summary>
+		/// Convert a Stream to a byte array
+		/// </summary>
+		/// <param name="stream">Stream</param>
+		/// <returns>byte[]</returns>
 		private static byte[] StreamToByteA(Stream stream)
 		{
+			stream.Position = 0;
 			byte[] bArray = new byte[stream.Length];
 			stream.Read(bArray, 0, (int)stream.Length);
 			return bArray;
 		}
 
+		/// <summary>
+		/// Gets an icon from the database
+		/// </summary>
+		/// <param name="userId">The user to retreaive the icon for</param>
+		/// <returns>The icon and mime type</returns>
 		public static (Stream icon, string mime) GetIcon(string userId)
 		{
 			var user = Users.Find($"{{ id : '{userId}' }}").FirstOrDefault();
@@ -181,6 +284,23 @@ namespace Kaisei
 			else
 				return default;
 		}
+
+		/// <summary>
+		/// Gets an icon from the database
+		/// </summary>
+		/// <param name="appId">The app to retreaive the icon for</param>
+		/// <returns>The icon and mime type</returns>
+		public static (Stream icon, string mime) GetAppIcon(string appId)
+		{
+			var app = Apps.Find($"{{ id : '{appId}' }}").FirstOrDefault();
+			if (app == null)
+				return default;
+			if (app.TryGetValue("icon", out var icon))
+				return (new MemoryStream(icon.AsByteArray), app.GetValue("icon-mime").AsString);
+			else
+				return default;
+		}
+
 
 		/// <summary>
 		/// Verify a user login
@@ -244,6 +364,11 @@ namespace Kaisei
 			};
 		}
 
+		/// <summary>
+		/// Get an app from an app apiKey
+		/// </summary>
+		/// <param name="appApiKey">The app apiKey</param>
+		/// <returns>The app</returns>
 		public static AppInfo VerifyApp(string appApiKey)
 		{
 			appApiKey = Sanitize(appApiKey);
@@ -283,6 +408,11 @@ namespace Kaisei
 			return user;
 		}
 
+		/// <summary>
+		/// The the list of apps authed to a given user
+		/// </summary>
+		/// <param name="userId">The user</param>
+		/// <returns>App list</returns>
 		public static AppInfo[] GetUserAuthedApps(string userId)
 		{
 			var apps = Users.Find($"{{ id : '{userId}' }}").FirstOrDefault()?.GetValue("apps").AsBsonArray;
@@ -295,6 +425,11 @@ namespace Kaisei
 			return appInfo;
 		}
 
+		/// <summary>
+		/// The the list of apps a user owns
+		/// </summary>
+		/// <param name="userId">The user</param>
+		/// <returns>App list</returns>
 		public static AppInfo[] GetUsersApps(string userId)
 		{
 			var apps = Apps.Find($"{{ owner : '{userId}' }}").ToList();
@@ -350,6 +485,32 @@ namespace Kaisei
 		}
 
 		/// <summary>
+		/// Update the info for a given user
+		/// </summary>
+		/// <param name="user">The user</param>
+		/// <param name="credentials">The information to update</param>
+		public static void UpdateUserInfo(UserModel user, UserCredentials credentials)
+		{
+			var updateDoc = new BsonDocument();
+			if (credentials.Username != null && user.Username != credentials.Username)
+				updateDoc.Add("username", Sanitize(credentials.Username));
+			if (credentials.Email != null && user.Email != credentials.Email)
+				updateDoc.Add("email", Sanitize(credentials.Email));
+			if (credentials.Password != null)
+				updateDoc.Add("password", HashPassword(credentials.Password));
+			if (updateDoc.Count() == 0)
+				return;
+			Users.UpdateOne($"{{ id : '{user.Id}' }}", new BsonDocument
+			{
+				{ "$set", updateDoc }
+			});
+			if (credentials.Username != null && user.Username != credentials.Username)
+				user.Username = credentials.Username;
+			if (credentials.Email != null && user.Email != credentials.Email)
+				user.Email = credentials.Email;
+		}
+
+		/// <summary>
 		/// Generate a authorization id for this user tied to the specified app
 		/// </summary>
 		/// <param name="appId">Target App</param>
@@ -375,11 +536,21 @@ namespace Kaisei
 			return res.IsModifiedCountAvailable && res.ModifiedCount > 0;
 		}
 
+		/// <summary>
+		/// Remove all authorization tokens from a user
+		/// </summary>
+		/// <param name="userId">The user</param>
 		public static void ClearAuthorizations(string userId)
 		{
 			Users.UpdateOne($"{{ id : '{userId}' }}", $"{{ $set : {{ authorizations : [] }} }}");
 		}
 
+		/// <summary>
+		/// Check wheather a user is authed for a given app
+		/// </summary>
+		/// <param name="appId">The user</param>
+		/// <param name="userId">The app</param>
+		/// <returns></returns>
 		public static bool IsAppAuthed(string appId, string userId)
 		{
 			return Users.CountDocuments($"{{ id : '{userId}', 'apps.appId' : '{appId}' }}") > 0;
@@ -445,6 +616,11 @@ namespace Kaisei
 			Apps.UpdateOne($"{{ id : '{appInfo.Id}' }}", update); ;
 		}
 
+		/// <summary>
+		/// Sanitize the raw input to be safe for mongodb
+		/// </summary>
+		/// <param name="raw">Raw string</param>
+		/// <returns>sanitized string</returns>
 		public static string Sanitize(string raw)
 		{
 			raw = raw.Replace("<", "&lt");
@@ -455,6 +631,11 @@ namespace Kaisei
 			return raw;
 		}
 
+		/// <summary>
+		/// Undo the sanitization
+		/// </summary>
+		/// <param name="sanitized">Sanitized string</param>
+		/// <returns>Unsanitized string</returns>
 		public static string UnSanitize(string sanitized)
 		{
 			sanitized = sanitized.Replace("&lt", "<");

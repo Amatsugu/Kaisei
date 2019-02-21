@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Kaisei.DataModels;
 using Nancy;
@@ -34,6 +35,38 @@ namespace Kaisei.Modules
 					return new Response { StatusCode = HttpStatusCode.Unauthorized };
 				else
 					return Response.AsJson(appUser);
+			});
+
+			Get("/avatar/{id}", p =>
+			{
+				var appId = ((string)p.id).Replace(' ', '+');
+				var (icon, mime) = KaiseiCore.GetAppIcon(appId);
+				if (icon == default)
+					return Response.AsRedirect("/res/img/defaultAppIcon.png");
+				else
+					return Response.FromStream(icon, mime);
+			});
+
+			Post("/avatar", _ =>
+			{
+				if (!(Context.CurrentUser is AppInfo user))
+					return new Response
+					{
+						StatusCode = HttpStatusCode.Unauthorized
+					};
+				try
+				{
+					var file = Context.Request.Files.First();
+					//Console.WriteLine(file.ContentType);
+					KaiseiCore.UploadAppIcon(user.Id, file.Value, file.ContentType);
+					return new Response { StatusCode = HttpStatusCode.OK };
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+					Console.WriteLine(e.StackTrace);
+					return new Response() { StatusCode = HttpStatusCode.ImATeapot };
+				}
 			});
 
 			Post("/sso/confirm", _ =>

@@ -1,8 +1,10 @@
-input
+input,
+button
 {
 	margin: 10px;
 	padding: 10px;
 	height: 40px;
+	outline-color: #ff0064;
 }
 input[type = "button"],
 input[type = "submit"]
@@ -11,11 +13,21 @@ input[type = "submit"]
 	color: #fff;
 	min-width: 100px;
 	border: none;
+	transition: background-color .5s;
+}
+
+input[type = "button"]:hover,
+input[type = "submit"]:hover
+{
+	background-color: rgb(200, 0, 90);
 }
 
 input[type = "email"],
 input[type = "password"],
-input[type = "text"]
+input[type = "text"],
+input[type = "url"],
+input[type = "file"],
+textarea
 {
 	color: #000;
 	min-width: 50%;
@@ -25,9 +37,23 @@ input[type = "text"]
 	transition: 0.5s border;
 }
 
+input[type = "file"]
+{
+	display: flex;
+}
+
+textarea
+{
+	margin: 10px;
+	padding: 10px;
+	resize: vertical;
+}
+
 input[type = "email"]:focus,
 input[type = "password"]:focus,
-input[type = "text"]:focus
+input[type = "text"]:focus,
+input[type = "url"]:focus,
+textarea:focus
 {
 	border: 1px solid rgb(128, 0, 50);
 }
@@ -35,8 +61,8 @@ input[type = "text"]:focus
 label.error
 {
 	color: #ff0064;
+	font-weight: 300;
 }
-
 
 #authorize
 {
@@ -45,7 +71,7 @@ label.error
 	grid-template-rows: 100px;
 	grid-template-areas: "User Arrow App";
 	width: 500px;
-	background-color: #eee;
+	background-color: #fff2f7;
 }
 
 #authorize #user
@@ -67,7 +93,7 @@ label.error
 	width: 0;
 	height: 0;
 	border-style: solid;
-	border-width: 50px 0 50px 20px;
+	border-width: 50px 0 50px 25px;
 	border-color: transparent transparent transparent #ff0064;
 }
 
