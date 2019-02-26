@@ -430,7 +430,7 @@ namespace Kaisei
 		/// </summary>
 		/// <param name="userId">The user</param>
 		/// <returns>App list</returns>
-		public static AppInfo[] GetUsersApps(string userId)
+		public static AppInfo[] GetUserApps(string userId)
 		{
 			var apps = Apps.Find($"{{ owner : '{userId}' }}").ToList();
 			var appInfo = new AppInfo[apps.Count];

@@ -55,7 +55,7 @@ namespace Kaisei.Modules
 					{
 						StatusCode = HttpStatusCode.Unauthorized
 					};
-				return KaiseiCore.GetUsersApps(user.Id);
+				return KaiseiCore.GetUserApps(user.Id);
 			});
 
 			Post("/avatar", _ =>

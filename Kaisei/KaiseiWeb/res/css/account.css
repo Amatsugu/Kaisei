@@ -185,6 +185,8 @@ body
 	grid-area: Icon;
 	height: 85px;
 	width: 85px;
+	border: 0;
+	outline: 0;
 }
 
 .app .name
@@ -208,10 +210,8 @@ body
 
 .app .deleted
 {
-	grid-column-start: 1;
-	grid-column-end: 4;
-	grid-row-start: 1;
-	grid-row-end: 3;
+	grid-column: 1 / -1;
+	grid-row: 1 / -1;
 	z-index: 1;
 	background-color: #fff;
 	font-size: 30px;
@@ -220,6 +220,21 @@ body
 	display: flex;
 	justify-content: center;
     align-items: center;
+}
+
+.app .placeholder
+{
+	background: #e6e2e2;
+	/* background: linear-gradient(90deg, #e6e2e2, #ffffff, #e6e2e2); */
+    /* background-size: 200% 200%; */
+    /* animation: LoadAnim 2s ease-out infinite; */
+}
+
+@keyframes LoadAnim 
+{ 
+    0%{background-position:200% 0%}
+    /* 50%{background-position:100% 0%} */
+    100%{background-position:0% 0%}
 }
 
 button
@@ -269,8 +284,7 @@ a:hover
 
 #myAppsHead h1
 {
-	grid-column-start: 1;
-	grid-column-end: 3;
+	grid-column: 1 / -1;
 	grid-row: 1;
 }
 
@@ -279,3 +293,34 @@ a:hover
 	grid-area: Btn;
 }
 
+#appIconUpload
+{
+	display: grid;
+	grid-template-columns: 50px auto;
+	grid-template-areas: "Icon Text";
+	grid-gap: 5px;
+	background-color: #e9e9e9;
+	margin: 10px;
+	padding: 10px;;
+}
+
+#appIconUpload input[type = "file"]
+{
+	grid-column: 1 / -1;
+	grid-row: 1 / -1;
+	opacity: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#appIconUpload #uploadIcon
+{
+	grid-area: Icon;
+}
+
+#appIconUpload #uploadText
+{
+	grid-area: Text;
+	line-height: 40px;
+	vertical-align: middle;
+}

@@ -24,7 +24,9 @@ namespace Kaisei.Modules
 				return View["account", new
 				{
 					user.Username,
-					user.Email
+					user.Email,
+					AuthedApps = new object[KaiseiCore.GetUserAuthedApps(user.Id).Length],
+					MyApps = new object[KaiseiCore.GetUserApps(user.Id).Length]
 				}];
 				//return $"{Context.Request.Headers.Referrer}"; //TODO: Create account page
 			});

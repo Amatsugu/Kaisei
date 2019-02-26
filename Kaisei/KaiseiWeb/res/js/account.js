@@ -139,7 +139,13 @@ function RenderAppCreate()
 	$("<label></label").appendTo(form).text("App Hostname");
 	var appHost = $("<input type='url' placeholder='App Hostname' autocomplete='off' maxlength='100'>").appendTo(form);
 	$("<label></label").appendTo(form).text("App Icon");
-	var appIcon = $("<input type='file' accept='image/*'>").appendTo(form);
+	var upZone = $("<div id='appIconUpload'></div>").appendTo(form).on("change", function () {
+		
+	});
+	var appIcon = $("<input type='file' accept='image/*'>").appendTo(upZone);
+	$("<div id='uploadIcon'></div>").appendTo(upZone);
+	$("<div id='uploadText'></div>").text("Choose Icon").appendTo(upZone);
+	
 
 	$("<button type='sumbit'></button>").appendTo(form).text("Create");
 
@@ -268,15 +274,17 @@ function ListApps(apps, container, deleteMsg, deleteFunc)
 	if(apps.length == 0)
 	{
 		container.text("No apps to display...");
+		return;
 	}
+	container.html("");
 	apps.forEach(app => {
-		var appE = $("<div class='app' style='display:none'></div").appendTo(container);
+		var appE = $("<div class='app'></div>").appendTo(container);
 		appE.append("<img src='/app/avatar/" + app.id + "'>");
 		appE.append("<div class='name'>" + app.name + "</div>");
 		appE.append("<div class='host'><a href='http://" + app.hostname + "' target='_blank'>" + app.hostname + "</a></div>");
 		$("<button>"+deleteMsg+"</button>").appendTo(appE).click(function(){
 			deleteFunc(app.id, appE);
 		});
-		appE.slideDown(500);
+		// appE.slideDown(500);
 	});
 }

@@ -49,14 +49,28 @@
 			
 			<h1>Authorized Apps</h1>
 			<div id="authAppList">
-				Loading Apps...
+				@Each.AuthedApps
+					<div class='app'>
+						<img class="placeholder">
+						<div class='name placeholder'></div>
+						<div class='host placeholder'><a></a></div>
+						<button disabled>Loading...</button>
+					</div>
+				@EndEach
 			</div>
 			<div id="myAppsHead">
 				<h1>My Apps</h1>
 				<button>Create App</button>
 			</div>
 			<div id="myApps">
-				Loading Apps...
+				@Each.AuthedApps
+					<div class='app'>
+						<img class="placeholder">
+						<div class='name placeholder'></div>
+						<div class='host placeholder'><a></a></div>
+						<button disabled>Loading...</button>
+					</div>
+				@EndEach
 			</div>
 		</div>
 	</div>

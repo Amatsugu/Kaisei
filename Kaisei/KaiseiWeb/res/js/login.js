@@ -187,6 +187,7 @@ function LoadAuthorize()
 		authId.remove();
 		main.attr("method", "get");
 		main.submit();
+		return;
 	}
 	$("#user .icon").attr("src", "/user/avatar");
 	$.ajax({
