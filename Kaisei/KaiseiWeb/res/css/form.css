@@ -31,10 +31,20 @@ textarea
 {
 	color: #000;
 	min-width: 50%;
-	background-color: #e9e9e9;
+	background-color: #fff2f7;
 	outline: none;
 	border: 1px solid #fff;
 	transition: 0.5s border;
+}
+
+input[type = "email"]::placeholder,
+input[type = "password"]::placeholder,
+input[type = "text"]::placeholder,
+input[type = "url"]::placeholder,
+input[type = "file"]::placeholder,
+textarea::placeholder
+{
+	color: #ffb6d3;
 }
 
 input[type = "file"]

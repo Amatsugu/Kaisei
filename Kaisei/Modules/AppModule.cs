@@ -17,6 +17,10 @@ namespace Kaisei.Modules
 
 			Get("/", _ => Context.CurrentUser);
 
+			Get("/create", _ => {
+				return View["appCreate"];
+			});
+
 			Get("/{id}", p =>
 			{
 				return Response.AsJson(KaiseiCore.GetAppInfo(((string)p.id).Replace(' ', '+')));

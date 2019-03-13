@@ -79,7 +79,7 @@ namespace Kaisei
 			internal static IMongoDatabase database;
 			internal static IMongoCollection<BsonDocument> users;
 			internal static IMongoCollection<BsonDocument> apps;
-			internal static IMongoCollection<BsonDocument> appUsers;
+			//internal static IMongoCollection<BsonDocument> appUsers;
 
 		}
 

@@ -139,12 +139,14 @@ function RenderAppCreate()
 	$("<label></label").appendTo(form).text("App Hostname");
 	var appHost = $("<input type='url' placeholder='App Hostname' autocomplete='off' maxlength='100'>").appendTo(form);
 	$("<label></label").appendTo(form).text("App Icon");
-	var upZone = $("<div id='appIconUpload'></div>").appendTo(form).on("change", function () {
-		
+	var upZone = $("<div id='appIconUpload'></div>").appendTo(form);
+	var appIcon = $("<input type='file' accept='image/*'>").appendTo(upZone).on("change", function () {
+		var file = this.files[0];
+		console.log(file);
+		upText.text("\""+file.name+"\"");
 	});
-	var appIcon = $("<input type='file' accept='image/*'>").appendTo(upZone);
 	$("<div id='uploadIcon'></div>").appendTo(upZone);
-	$("<div id='uploadText'></div>").text("Choose Icon").appendTo(upZone);
+	var upText = $("<div id='uploadText'></div>").text("Choose Icon").appendTo(upZone);
 	
 
 	$("<button type='sumbit'></button>").appendTo(form).text("Create");

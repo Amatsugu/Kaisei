@@ -42,7 +42,8 @@ body
 #logo
 {
 	grid-area: Logo;
-	font-size: 64px;
+	height: 65px;
+	font-size: 4em;
 	text-align: center;
 	align-self: flex-end;
 	font-weight: 100;
@@ -110,13 +111,18 @@ body
 {
 	grid-area: Content;
 	font-weight: 200;
-	padding: 10px;
+	padding: 20px;
 }
 
 #window #windowBody form
 {
 	display: flex;
 	flex-direction: column;
+}
+
+#windowBody label
+{
+	padding-left: 10px;
 }
 
 .noMargin
