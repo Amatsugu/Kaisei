@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.7.3" />
-    <PackageReference Include="Nancy" Version="2.0.0-pre1911" />
-    <PackageReference Include="Nancy.Authentication.Stateless" Version="2.0.0-pre1911" />
-    <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0-pre1911" />
-    <PackageReference Include="Nancy.ViewEngines.Razor" Version="2.0.0-pre1911" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.1" />
+    <PackageReference Include="Nancy" Version="2.0.0" />
+    <PackageReference Include="Nancy.Authentication.Stateless" Version="2.0.0" />
+    <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0" />
+    <PackageReference Include="Nancy.ViewEngines.Razor" Version="2.0.0" />
     <PackageReference Include="SkiaSharp" Version="1.68.0" />
   </ItemGroup>
 
