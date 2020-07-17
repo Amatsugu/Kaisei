@@ -310,8 +310,8 @@ namespace Kaisei
 		public static UserModel VerifyUser(UserCredentials credentials)
 		{
 			credentials.Email = Sanitize(credentials.Email);
-			var userinfo = Users.Find($"{{ email : '{ credentials.Email}' }}").First();
-			if (userinfo.IsBsonNull)
+			var userinfo = Users.Find($"{{ email : '{ credentials.Email}' }}").FirstOrDefault();
+			if (userinfo ==  null)
 				return null;
 			if (VerifyPassword(credentials.Password, userinfo.GetValue("password").AsString))
 			{
