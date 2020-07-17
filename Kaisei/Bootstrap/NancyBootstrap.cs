@@ -22,7 +22,7 @@ namespace Anzu.Bootstrap
 #if DEBUG
 			environment.Views(runtimeViewUpdates: true);
 #endif
-			environment.Tracing(true, true);
+			environment.Tracing(false, true);
 		}
 
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
