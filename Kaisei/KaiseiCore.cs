@@ -34,7 +34,7 @@ namespace Kaisei
 			get
 			{
 				if (KaiseiDB.mongoClient == null)
-					return KaiseiDB.mongoClient = new MongoClient("mongodb://192.168.86.74:27017");
+					return KaiseiDB.mongoClient = new MongoClient("mongodb://192.168.86.28:27017");
 				else
 					return KaiseiDB.mongoClient;
 			}
