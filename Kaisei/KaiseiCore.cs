@@ -623,6 +623,8 @@ namespace Kaisei
 		/// <returns>sanitized string</returns>
 		public static string Sanitize(string raw)
 		{
+			if (string.IsNullOrWhiteSpace(raw))
+				return null;
 			raw = raw.Replace("<", "&lt");
 			raw = raw.Replace(">", "&gt");
 			raw = raw.Replace("\'", "&quot");
